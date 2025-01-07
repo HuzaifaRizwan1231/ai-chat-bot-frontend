@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import { getChatCompletionResponseApiCall } from '../../api-calls/chat.api';
+import { useState, useEffect, useRef } from "react";
+import { getChatCompletionResponseApiCall } from "../../api-calls/chat.api";
 
 export const useChatInterface = () => {
   // States
   const [messages, setMessages] = useState([]);
   const [darkMode, setDarkMode] = useState(() => {
-    const savedPreference = localStorage.getItem('darkMode');
+    const savedPreference = localStorage.getItem("darkMode");
     return savedPreference ? JSON.parse(savedPreference) : false;
   });
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export const useChatInterface = () => {
     if (messageListRef.current) {
       messageListRef.current.scrollTo({
         top: messageListRef.current.scrollHeight,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -28,26 +28,35 @@ export const useChatInterface = () => {
     const newMessage = {
       id: messages.length + 1,
       text,
-      sender: 'user',
+      sender: "user",
     };
     setMessages([...messages, newMessage]);
 
     const response = await getChatCompletionResponseApiCall();
-    setTimeout(() => {
-      const botResponse = {
+
+    let message;
+    if (response.success) {
+      message = response.message;
+    } else {
+        message =
+        "I'm sorry, I couldn't process your request. Please try again.";
+      console.error(response);
+    }
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
         id: messages.length + 2,
-        text: "I'm an AI assistant. How can I help you?",
-        sender: 'bot',
-      };
-      setMessages((prevMessages) => [...prevMessages, botResponse]);
-      setLoading(false);
-    }, 1000);
+        text: message,
+        sender: "bot",
+      },
+    ]);
+    setLoading(false);
   };
 
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => {
       const newMode = !prevMode;
-      localStorage.setItem('darkMode', JSON.stringify(newMode));
+      localStorage.setItem("darkMode", JSON.stringify(newMode));
       return newMode;
     });
   };
@@ -59,9 +68,9 @@ export const useChatInterface = () => {
 
   useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
 

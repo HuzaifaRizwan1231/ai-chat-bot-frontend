@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import ChatBotIcon from "../icons/ChatBotIcon";
 
 const MessageItem = ({ message }) => {
   const isUser = message.sender === "user";
@@ -21,8 +22,9 @@ const MessageItem = ({ message }) => {
         </>
       ) : (
         <><div
-        className="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-3xl px-4 py-2 text-gray-800 dark:text-white"
+        className="max-w-xs flex items-center gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl rounded-3xl px-4 py-2 text-gray-800 dark:text-white"
       >
+        <ChatBotIcon/>
         <p className="text-base ">{message.text}</p>
       </div></>
       )}

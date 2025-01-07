@@ -25,7 +25,7 @@ const ChatInterface = () => {
         transition={{ duration: 0.5 }}
         className="flex flex-col flex-1 overflow-hidden bg-primaryColorLight dark:bg-primaryColorDark"
       >
-        <MessageList messages={messages} ref={messageListRef} />
+        <MessageList loading={loading} messages={messages} ref={messageListRef} />
         <InputArea loading={loading} onSendMessage={handleSendMessage} />
       </motion.div>
     </div>

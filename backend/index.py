@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import openai
 import os
+import time
 
 load_dotenv()
 app = FastAPI()
@@ -20,6 +21,13 @@ app.add_middleware(
 @app.get("/api/chat/completion")
 def getChatCompletionResponse():
     try:
+        
+        # A dummy successfull response
+        response = {"success": True, "message":"Hello! How can I help you?", "statusCode": 200}
+
+        time.sleep(5)
+        return response
+    
         completion = openai.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -30,4 +38,9 @@ def getChatCompletionResponse():
         return (completion.choices[0].message)
 
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        response = {"success": False, "message":e.response.json().get('error', {}).get('message', str(e)), "statusCode": e.response.status_code}
+
+        # Loggin the error
+        print(response)
+
+        return response
