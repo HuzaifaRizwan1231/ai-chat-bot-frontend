@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import MessageItem from './MessageItem';
 
-const MessageList = ({ messages }) => {
+const MessageList =forwardRef(({ messages }, ref) => {
   return (
     <motion.div
-      className="flex-1 overflow-y-auto p-4 space-y-4"
+    ref={ref}
+      className="flex-1 overflow-y-auto p-4 space-y-4 px-[21rem]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -15,7 +16,7 @@ const MessageList = ({ messages }) => {
       ))}
     </motion.div>
   );
-};
+});
 
 export default MessageList;
 

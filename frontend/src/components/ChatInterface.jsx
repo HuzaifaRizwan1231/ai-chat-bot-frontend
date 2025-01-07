@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import MessageList from './MessageList';
 import InputArea from './InputArea';
@@ -7,6 +7,21 @@ import Navbar from './Navbar';
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
   const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(false)
+  const messageListRef = useRef(null);
+
+  const scrollToBottom = () => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollTo({
+        top:messageListRef.current.scrollHeight,
+        behavior: "smooth"
+      })
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     if (darkMode) {
@@ -17,6 +32,7 @@ const ChatInterface = () => {
   }, [darkMode]);
 
   const handleSendMessage = (text) => {
+    setLoading(true)
     const newMessage = {
       id: messages.length + 1,
       text,
@@ -32,7 +48,9 @@ const ChatInterface = () => {
         sender: 'bot',
       };
       setMessages((prevMessages) => [...prevMessages, botResponse]);
+      setLoading(false)
     }, 1000);
+    
   };
 
   return (
@@ -42,10 +60,10 @@ const ChatInterface = () => {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex flex-col flex-1 overflow-hidden bg-gray-50 dark:bg-gray-900"
+        className="flex flex-col flex-1 overflow-hidden bg-primaryColorLight dark:bg-primaryColorDark"
       >
-        <MessageList messages={messages} />
-        <InputArea onSendMessage={handleSendMessage} />
+        <MessageList messages={messages} ref={messageListRef} />
+        <InputArea loading={loading} onSendMessage={handleSendMessage} />
       </motion.div>
     </div>
   );
