@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { SunIcon, MoonIcon } from '@heroicons/react/solid';
 
-const Navbar = ({ darkMode, setDarkMode }) => {
+const Navbar = ({ darkMode, toggleDarkMode }) => {
   return (
     <nav className="bg-primaryColorLight dark:bg-primaryColorDark shadow-md">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,7 +11,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
             <span className="text-2xl font-bold text-gray-800 dark:text-white">AI Chatbot</span>
           </div>
           <motion.button
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleDarkMode}
             className="p-2 rounded-full bg-secondaryColorLight dark:bg-secondaryColorDark text-gray-800 dark:text-white"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}

@@ -11,9 +11,16 @@ const MessageList =forwardRef(({ messages }, ref) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {messages.map((message) => (
-        <MessageItem key={message.id} message={message} />
-      ))}
+    {messages.length === 0 ? (
+        <div className="text-center text-gray-500 dark:text-gray-400">
+          <h2 className="text-2xl font-bold mb-2">Welcome to AI Chatbot!</h2>
+          <p className="text-lg">Start a conversation by typing a message below.</p>
+        </div>
+      ) : (
+        messages.map((message) => (
+          <MessageItem key={message.id} message={message} />
+        ))
+      )}
     </motion.div>
   );
 });
