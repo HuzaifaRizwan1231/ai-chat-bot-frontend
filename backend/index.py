@@ -1,12 +1,24 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
 import openai
+import os
 
+load_dotenv()
 app = FastAPI()
-openai.api_key = "OPENAI_API_KEY"
+openai.api_key = os.getenv("API_KEY")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"], 
+)
 
 
-@app.get("/chat_completions")
-def getResponse():
+@app.get("/api/chat/completion")
+def getChatCompletionResponse():
     try:
         completion = openai.chat.completions.create(
             model="gpt-4o",

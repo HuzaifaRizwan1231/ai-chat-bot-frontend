@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import MessageList from './MessageList';
 import InputArea from './InputArea';
 import Navbar from './Navbar';
+import { getChatCompletionResponseApiCall } from '../api-calls/chat.api';
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState([]);
@@ -31,7 +32,7 @@ const ChatInterface = () => {
     }
   }, [darkMode]);
 
-  const handleSendMessage = (text) => {
+  const handleSendMessage = async (text) => {
     setLoading(true)
     const newMessage = {
       id: messages.length + 1,
@@ -41,6 +42,7 @@ const ChatInterface = () => {
     setMessages([...messages, newMessage]);
 
     // Simulate bot response (replace with actual API call in a real application)
+    const response = await getChatCompletionResponseApiCall()
     setTimeout(() => {
       const botResponse = {
         id: messages.length + 2,
