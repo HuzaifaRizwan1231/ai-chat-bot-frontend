@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { getChatCompletionResponseApiCall } from "../../api-calls/chat.api";
+import { getResponseFromOpenAIApiCall } from "../../api-calls/openai.api";
+import { getResponseFromGeminiApiCall } from "../../api-calls/gemini.api";
 
 export const useChatInterface = () => {
   // States
@@ -9,6 +10,11 @@ export const useChatInterface = () => {
     return savedPreference ? JSON.parse(savedPreference) : false;
   });
   const [loading, setLoading] = useState(false);
+  const modelOptions = [
+    { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
+    { value: "gpt-4o", label: "GPT-4o" },
+  ];
+  const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
 
   // Refs
   const messageListRef = useRef(null);
@@ -32,14 +38,18 @@ export const useChatInterface = () => {
     };
     setMessages([...messages, newMessage]);
 
-    const response = await getChatCompletionResponseApiCall();
+    let response;
+    if (selectedModel === "gemini-1.5-flash") {
+      response = await getResponseFromGeminiApiCall({model: selectedModel, text});
+    } else if (selectedModel === "gpt-4o") {
+      response = await getResponseFromOpenAIApiCall({model: selectedModel, text});
+    }
 
     let message;
     if (response.success) {
       message = response.message;
     } else {
-        message =
-        "I'm sorry, I couldn't process your request. Please try again.";
+      message = "I'm sorry, I couldn't process your request. Please try again.";
       console.error(response);
     }
     setMessages((prevMessages) => [
@@ -81,5 +91,8 @@ export const useChatInterface = () => {
     loading,
     messageListRef,
     handleSendMessage,
+    selectedModel,
+    setSelectedModel,
+    modelOptions,
   };
 };

@@ -1,10 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Navbar from '../../components/Navbar';
-import MessageList from '../../components/chat-interface/MessageList';
-import { useChatInterface } from './useChatInterface';
-import InputArea from '../../components/chat-interface/input-area/InputArea';
-
+import React from "react";
+import { motion } from "framer-motion";
+import Navbar from "../../components/Navbar";
+import MessageList from "../../components/chat-interface/MessageList";
+import { useChatInterface } from "./useChatInterface";
+import InputArea from "../../components/chat-interface/input-area/InputArea";
 
 const ChatInterface = () => {
   const {
@@ -14,18 +13,32 @@ const ChatInterface = () => {
     loading,
     messageListRef,
     handleSendMessage,
+    selectedModel,
+    setSelectedModel,
+    modelOptions,
   } = useChatInterface();
 
   return (
-    <div className={`flex flex-col h-screen ${darkMode ? 'dark' : ''}`}>
-      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+    <div className={`flex flex-col h-screen ${darkMode ? "dark" : ""}`}>
+      <Navbar
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+        selectedModel={selectedModel}
+        setSelectedModel={setSelectedModel}
+        modelOptions={modelOptions}
+      />
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="flex flex-col flex-1 overflow-hidden bg-primaryColorLight dark:bg-primaryColorDark"
       >
-        <MessageList loading={loading} messages={messages} ref={messageListRef} />
+        <MessageList
+          loading={loading}
+          messages={messages}
+          ref={messageListRef}
+          selectedModel={selectedModel}
+        />
         <InputArea loading={loading} onSendMessage={handleSendMessage} />
       </motion.div>
     </div>
@@ -33,4 +46,3 @@ const ChatInterface = () => {
 };
 
 export default ChatInterface;
-

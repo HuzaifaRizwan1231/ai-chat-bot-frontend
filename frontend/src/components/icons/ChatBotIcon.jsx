@@ -1,6 +1,16 @@
 import React from "react";
+import GeminiIcon from "./GeminiIcon";
+import OpenaiIcon from "./OpenaiIcon";
 
-const ChatBotIcon = () => {
+const ChatBotIcon = ({selectedModel}) => {
+  if (selectedModel ==="gemini-1.5-flash") {
+    return <GeminiIcon/>
+  }
+
+  if (selectedModel === "gpt-4o") {
+    return <OpenaiIcon/>
+  }
+  
   return (
     <>
       <svg
