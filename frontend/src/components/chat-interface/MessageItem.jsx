@@ -8,7 +8,7 @@ import { solarizedDarkAtom, solarizedlight } from "react-syntax-highlighter/dist
 
 const MessageItem = ({ message, selectedModel }) => {
   const isUser = message.sender === "user";
-  const isDarkMode = document.documentElement.classList.contains("dark");
+  const isDarkMode = localStorage.getItem("darkMode") === "true";
 
   return (
     <motion.div
@@ -56,7 +56,7 @@ const MessageItem = ({ message, selectedModel }) => {
               <ChatBotIcon selectedModel={selectedModel}/>
             </div>
             <ReactMarkdown
-              className="text-base"
+              className="text-base leading-loose"
               components={{
                 code({ node, inline, className, children, ...props }) {
                   const match = /language-(\w+)/.exec(className || "");
@@ -71,7 +71,7 @@ const MessageItem = ({ message, selectedModel }) => {
                     </SyntaxHighlighter>
                   ) : (
                     <code
-                      className={`bg-yellow-100 dark:bg-yellow-900 p-1 rounded ${className}`}
+                      className={`bg-yellow-100 dark:bg-[#424242] p-1 rounded ${className}`}
                       {...props}
                     >
                       {children}
