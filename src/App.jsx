@@ -1,5 +1,5 @@
 import './App.css'
-import ChatInterface from './pages/chat-interface/ChatInterface'
+import ChatInterface from './features/chat/pages/ChatInterface'
 
 function App() {
  

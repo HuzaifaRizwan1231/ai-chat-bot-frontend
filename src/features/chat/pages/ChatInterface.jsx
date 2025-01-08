@@ -1,9 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Navbar from "../../components/Navbar";
-import MessageList from "../../components/chat-interface/MessageList";
-import { useChatInterface } from "./useChatInterface";
-import InputArea from "../../components/chat-interface/input-area/InputArea";
+import Navbar from "../../../shared/Navbar";
+import MessageList from "../components/MessageList";
+import {useChatInterface} from "../hooks/useChatInterface";
+
+import InputArea from "../components/InputArea";
 
 const ChatInterface = () => {
   const {

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowUpIcon } from "@heroicons/react/solid";
-import { useInputArea } from "./useInputArea";
+import { useInputArea } from "../hooks/useInputArea";
 
 const InputArea = ({ onSendMessage, loading }) => {
   const {
@@ -14,18 +14,18 @@ const InputArea = ({ onSendMessage, loading }) => {
 
   return (
     <motion.div
-      className="dark:bg-secondaryColorDark bg-secondaryColorLight p-4 my-4 shadow-md w-1/2 mx-auto rounded-3xl"
+      className="dark:bg-secondaryColorDark bg-secondaryColorLight p-4 my-4 shadow-md w-11/12 sm:w-3/4 lg:w-1/2 mx-auto rounded-3xl"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <form onSubmit={handleSubmit} className="flex space-x-2">
+      <form onSubmit={handleSubmit} className="flex gap-2">
         <textarea
           onKeyDown={handleKeyDown}
           value={input}
           onChange={handleInputChange}
           placeholder="Message AI Chatbot"
-          className="flex-1 rounded-lg focus:outline-none dark:bg-secondaryColorDark dark:text-white bg-secondaryColorLight text-black resize-none"
+          className="flex-1 w-full rounded-lg focus:outline-none dark:bg-secondaryColorDark dark:text-white bg-secondaryColorLight text-black resize-none"
           rows={rows}
         />
         <motion.button

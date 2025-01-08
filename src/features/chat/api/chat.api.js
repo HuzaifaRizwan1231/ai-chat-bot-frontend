@@ -1,8 +1,8 @@
-import axios from "../config/axios.config"
+import axios from "../../../config/axios.config"
 
-const baseURL = '/api/gemini/chat'
+const baseURL = '/api/chat'
 
-export const getResponseFromGeminiApiCall = async (body)=>{
+export const getResponseFromChatApiCall = async (body)=>{
     try {
         const response = await axios.post(`${baseURL}/completion`, body)
         return response.data

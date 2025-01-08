@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getResponseFromOpenAIApiCall } from "../../api-calls/openai.api";
-import { getResponseFromGeminiApiCall } from "../../api-calls/gemini.api";
+import { getResponseFromChatApiCall } from "../api/chat.api";
 
 export const useChatInterface = () => {
   // States
@@ -11,8 +10,8 @@ export const useChatInterface = () => {
   });
   const [loading, setLoading] = useState(false);
   const modelOptions = [
-    { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
     { value: "gpt-4o", label: "GPT-4o" },
+    { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
   ];
   const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
 
@@ -38,12 +37,7 @@ export const useChatInterface = () => {
     };
     setMessages([...messages, newMessage]);
 
-    let response;
-    if (selectedModel === "gemini-1.5-flash") {
-      response = await getResponseFromGeminiApiCall({model: selectedModel, text});
-    } else if (selectedModel === "gpt-4o") {
-      response = await getResponseFromOpenAIApiCall({model: selectedModel, text});
-    }
+    const response = await getResponseFromChatApiCall({model: selectedModel, text});
 
     let message;
     if (response.success) {
@@ -57,7 +51,7 @@ export const useChatInterface = () => {
       {
         id: messages.length + 2,
         text: message,
-        sender: "bot",
+        sender: selectedModel,
       },
     ]);
     setLoading(false);
