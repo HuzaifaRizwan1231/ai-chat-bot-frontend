@@ -32,10 +32,11 @@ const MessageItem = ({ message }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.5 }}
+              className="w-full overflow-x-auto"
             >
               <MarkdownRenderer
                 message={message}
-                classStyles={"text-base leading-loose w-full overflow-x-auto"}
+                classStyles={"text-base leading-loose"}
               />
             </motion.div>
           </div>

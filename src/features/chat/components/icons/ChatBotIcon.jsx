@@ -1,6 +1,7 @@
 import React from "react";
 import GeminiIcon from "./GeminiIcon";
 import OpenaiIcon from "./OpenaiIcon";
+import MergstackBotIcon from "./MergstackBotIcon";
 
 const ChatBotIcon = ({model}) => {
   if (model ==="gemini-1.5-flash") {
@@ -9,6 +10,10 @@ const ChatBotIcon = ({model}) => {
 
   if (model === "gpt-4o") {
     return <OpenaiIcon/>
+  }
+
+  if (model === "mergestack-chat-assistant") {
+    return <MergstackBotIcon/>
   }
   
   return (
