@@ -10,12 +10,17 @@ const MessageItem = ({ message }) => {
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       {isUser ? (
         <>
-          <div className="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-3xl px-4 py-2 bg-secondaryColorLight dark:bg-secondaryColorDark text-black dark:text-white">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-3xl px-4 py-2 bg-secondaryColorLight dark:bg-secondaryColorDark text-black dark:text-white"
+          >
             <MarkdownRenderer
               message={message}
               classStyles={"text-base leading-loose"}
             />
-          </div>
+          </motion.div>
         </>
       ) : (
         <>
@@ -24,9 +29,9 @@ const MessageItem = ({ message }) => {
               <ChatBotIcon model={message.sender} />
             </div>
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 100 }}
-              transition={{ duration: 3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5 }}
             >
               <MarkdownRenderer
                 message={message}

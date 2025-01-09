@@ -8,7 +8,7 @@ const MessageList = forwardRef(({ loading, messages, selectedModel }, ref) => {
   return (
     <motion.div
       ref={ref}
-      className="flex-1 overflow-y-auto p-4 space-y-4 px-4 sm:px-8 md:px-[7rem] lg:px-[16rem] xl:px-[21rem]"
+      className="flex-1 overflow-y-auto pt-4 pb-8 space-y-4 px-4 sm:px-8 md:px-[7rem] lg:px-[16rem] xl:px-[21rem]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}

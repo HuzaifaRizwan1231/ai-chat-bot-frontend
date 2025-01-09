@@ -41,7 +41,7 @@ export const useChatInterface = () => {
 
     let message;
     if (response.success) {
-      message = response.message;
+      message = response.data;
     } else {
       message = "I'm sorry, I couldn't process your request. Please try again.";
       console.error(response);
