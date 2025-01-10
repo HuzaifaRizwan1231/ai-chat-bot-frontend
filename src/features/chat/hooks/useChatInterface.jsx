@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getResponseFromChatApiCall } from "../api/chat.api";
+import { getResponseFromChatApiCall, trancribeAudioApiCall } from "../api/chat.api";
 
 export const useChatInterface = () => {
   // States
@@ -16,9 +16,12 @@ export const useChatInterface = () => {
     { value: "claude-3-5-sonnet-20241022", label: "Claude-Sonnet-3.5" },
   ];
   const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
+  const [recording, setRecording] = useState(false);
+  const [transcribing, setTranscribing] = useState(false);
 
   // Refs
   const messageListRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
 
   // Handlers
   const scrollToBottom = () => {
@@ -59,6 +62,39 @@ export const useChatInterface = () => {
     setLoading(false);
   };
 
+  const handleAudioRecording = () => {
+    if (recording) {
+      setTranscribing(true)
+      mediaRecorderRef.current.stop();
+    } else {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        mediaRecorderRef.current = new MediaRecorder(stream);
+        mediaRecorderRef.current.ondataavailable = handleAudioData;
+        mediaRecorderRef.current.start();
+      });
+    }
+    setRecording(!recording);
+  };
+
+  const handleAudioData = (event) => {
+    const audioBlob = event.data;
+    const formData = new FormData();
+    formData.append("audio", audioBlob, "recording.wav");
+    sendAudio(formData);
+  };
+
+  const sendAudio = async (formData) => {
+    setTranscribing(true);
+    const response = await trancribeAudioApiCall(formData);
+    if (response.success){
+      setTranscribing(false);
+      handleSendMessage(response.data);
+    }
+    else{
+      console.error(response)
+    }
+  };
+
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => {
       const newMode = !prevMode;
@@ -90,5 +126,8 @@ export const useChatInterface = () => {
     selectedModel,
     setSelectedModel,
     modelOptions,
+    handleAudioRecording,
+    recording,
+    transcribing
   };
 };

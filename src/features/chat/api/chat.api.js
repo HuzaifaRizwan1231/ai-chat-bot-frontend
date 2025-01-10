@@ -10,3 +10,12 @@ export const getResponseFromChatApiCall = async (body)=>{
         return e
     }
 }
+
+export const trancribeAudioApiCall = async (formData) => {
+    try {
+        const response = await axios.post(`${baseURL}/transcribe`, formData);
+        return response.data;
+    } catch (e) {
+        return e;
+    }
+};

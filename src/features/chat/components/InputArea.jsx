@@ -1,9 +1,9 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowUpIcon } from "@heroicons/react/solid";
+import { ArrowUpIcon, MicrophoneIcon } from "@heroicons/react/solid";
 import { useInputArea } from "../hooks/useInputArea";
 
-const InputArea = ({ onSendMessage, loading }) => {
+const InputArea = ({ onSendMessage, loading, handleAudioRecording, recording, transcribing }) => {
   const {
     input,
     rows,
@@ -29,16 +29,33 @@ const InputArea = ({ onSendMessage, loading }) => {
           rows={rows}
         />
         <motion.button
-          disabled={loading}
+          disabled={loading || recording || transcribing}
           type="submit"
           className={`px-4 py-2 h-8 w-8 flex items-center justify-center mt-auto ${
-            loading || input.length == 0
+            loading || recording || transcribing || input.length == 0
               ? "dark:bg-[#676767] dark:text-[#2f2f2f] bg-[#d7d7d7] text-[#f4f4f4]"
               : "dark:bg-white bg-black dark:text-black text-white dark:hover:bg-slate-300"
           } rounded-full focus:outline-none`}
         >
           <div>
             <ArrowUpIcon className="w-5 h-5" />
+          </div>
+        </motion.button>
+
+        <motion.button
+          disabled={loading || transcribing}
+          type="button"
+          onClick={handleAudioRecording}
+          className={`px-4 py-2 h-8 w-8 flex items-center justify-center mt-auto ${
+            loading || transcribing
+              ? "dark:bg-[#676767] dark:text-[#2f2f2f] bg-[#d7d7d7] text-[#f4f4f4]"
+              : recording
+              ? "dark:bg-red-500 bg-red-500 dark:text-white text-white"
+              : "dark:bg-white bg-black dark:text-black text-white dark:hover:bg-slate-300"
+          } rounded-full focus:outline-none`}
+        >
+          <div>
+            <MicrophoneIcon className="w-5 h-5" />
           </div>
         </motion.button>
       </form>
