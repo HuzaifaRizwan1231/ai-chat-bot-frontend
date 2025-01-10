@@ -12,7 +12,8 @@ export const useChatInterface = () => {
   const modelOptions = [
     { value: "gpt-4o", label: "GPT-4o" },
     { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
-    { value: "mergestack-chat-assistant", label: "Mergestack Assisant" },
+    { value: "mergestack-chat-assistant", label: "Mergestack-Assisant" },
+    { value: "claude-3-5-sonnet-20241022", label: "Claude-Sonnet-3.5" },
   ];
   const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
 
@@ -43,7 +44,6 @@ export const useChatInterface = () => {
     let message;
     if (response.success) {
       message = response.data;
-      console.log(message)
     } else {
       message = "I'm sorry, I couldn't process your request. Please try again.";
       console.error(response);
