@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { getResponseFromChatApiCall, trancribeAudioApiCall } from "../api/chat.api";
+import {
+  getResponseFromChatApiCall,
+  trancribeAudioApiCall,
+} from "../api/chat.api";
 
 export const useChatInterface = () => {
   // States
@@ -11,6 +14,10 @@ export const useChatInterface = () => {
   const [loading, setLoading] = useState(false);
   const modelOptions = [
     { value: "gpt-4o", label: "GPT-4o" },
+    {
+      value: "ft:gpt-4o-mini-2024-07-18:mergestack::AqhhvrOU",
+      label: "OpenAI Fine Tuned",
+    },
     { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
     { value: "mergestack-chat-assistant", label: "Mergestack-Assisant" },
     { value: "claude-3-5-sonnet-20241022", label: "Claude-Sonnet-3.5" },
@@ -42,7 +49,10 @@ export const useChatInterface = () => {
     };
     setMessages([...messages, newMessage]);
 
-    const response = await getResponseFromChatApiCall({model: selectedModel, text});
+    const response = await getResponseFromChatApiCall({
+      model: selectedModel,
+      text,
+    });
 
     let message;
     if (response.success) {
@@ -64,7 +74,7 @@ export const useChatInterface = () => {
 
   const handleAudioRecording = () => {
     if (recording) {
-      setTranscribing(true)
+      setTranscribing(true);
       mediaRecorderRef.current.stop();
     } else {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -86,12 +96,11 @@ export const useChatInterface = () => {
   const sendAudio = async (formData) => {
     setTranscribing(true);
     const response = await trancribeAudioApiCall(formData);
-    if (response.success){
+    if (response.success) {
       setTranscribing(false);
       handleSendMessage(response.data);
-    }
-    else{
-      console.error(response)
+    } else {
+      console.error(response);
     }
   };
 
@@ -128,6 +137,6 @@ export const useChatInterface = () => {
     modelOptions,
     handleAudioRecording,
     recording,
-    transcribing
+    transcribing,
   };
 };
