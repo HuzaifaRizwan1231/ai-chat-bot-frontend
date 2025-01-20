@@ -1,4 +1,5 @@
 import axios from "../../../config/axios.config";
+import { API_URL } from "../../../config/constants.config";
 import { decryptData, encryptData } from "../../../utils/cypto.utils";
 
 const baseURL = "/api/chat";
@@ -23,5 +24,17 @@ export const trancribeAudioApiCall = async (formData) => {
     return response.data;
   } catch (e) {
     return e;
+  }
+};
+
+export const eventSourceApiCall = async (body) => {
+  try {
+    return new EventSource(
+      `${API_URL}${baseURL}/stream?text=${encodeURIComponent(
+        body.text
+      )}&model=${body.model}`
+    );
+  } catch (e) {
+    console.error(e);
   }
 };

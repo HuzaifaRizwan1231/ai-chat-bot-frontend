@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import {
+  eventSourceApiCall,
   getResponseFromChatApiCall,
   trancribeAudioApiCall,
 } from "../api/chat.api";
+import { encryptData } from "../../../utils/cypto.utils";
+import { STREAM_ENABLED_MODELS } from "../../../config/constants.config";
 
 export const useChatInterface = () => {
   // States
@@ -30,6 +33,7 @@ export const useChatInterface = () => {
   // Refs
   const messageListRef = useRef(null);
   const mediaRecorderRef = useRef(null);
+  const lastMessageRef = useRef(null);
 
   // Handlers
   const scrollToBottom = () => {
@@ -41,6 +45,40 @@ export const useChatInterface = () => {
     }
   };
 
+  const handleChatStream = async (text) => {
+    const eventSource = await eventSourceApiCall({
+      text,
+      model: selectedModel,
+    });
+
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const lastMessage = updatedMessages[updatedMessages.length - 1];
+
+        // Check if lastMessage is from assistant and avoid appending duplicate content
+        if (lastMessage && lastMessage.sender !== "user") {
+          lastMessage.text += data.text;
+        } else {
+          updatedMessages.push({
+            id: prevMessages.length + 1,
+            text: data.text,
+            sender: selectedModel,
+          });
+        }
+
+        return updatedMessages;
+      });
+    };
+
+    eventSource.onerror = (error) => {
+      console.log("Error occurred:", error);
+      eventSource.close();
+    };
+  };
+
   const handleSendMessage = async (text) => {
     setLoading(true);
     const newMessage = {
@@ -50,26 +88,34 @@ export const useChatInterface = () => {
     };
     setMessages([...messages, newMessage]);
 
-    const response = await getResponseFromChatApiCall({
-      model: selectedModel,
-      text,
-    });
-
-    let message;
-    if (response.success) {
-      message = response.data;
+    if (STREAM_ENABLED_MODELS.includes(selectedModel)) {
+      // Handle models with stream enabled
+      handleChatStream(text);
     } else {
-      message = "I'm sorry, I couldn't process your request. Please try again.";
-      console.error(response);
+      // Handle models without stream enabled
+      let message;
+      const response = await getResponseFromChatApiCall({
+        model: selectedModel,
+        text,
+      });
+
+      if (response.success) {
+        message = response.data;
+      } else {
+        message =
+          "I'm sorry, I couldn't process your request. Please try again.";
+        console.error(response);
+      }
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: messages.length + 2,
+          text: message,
+          sender: selectedModel,
+        },
+      ]);
     }
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: messages.length + 2,
-        text: message,
-        sender: selectedModel,
-      },
-    ]);
+
     setLoading(false);
   };
 
