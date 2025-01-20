@@ -19,6 +19,7 @@ export const useChatInterface = () => {
       label: "OpenAI Fine Tuned",
     },
     { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
+    { value: "tunedModels/increment-vgmge91wh5dn", label: "Gemini Fine Tuned" },
     { value: "mergestack-chat-assistant", label: "Mergestack-Assisant" },
     { value: "claude-3-5-sonnet-20241022", label: "Claude-Sonnet-3.5" },
   ];
