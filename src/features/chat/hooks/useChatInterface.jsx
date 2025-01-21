@@ -95,7 +95,7 @@ export const useChatInterface = () => {
     } else {
       // Handle models without stream enabled
       let message;
-      const response = await getResponseFromLangchainChatApiCall({
+      const response = await getResponseFromChatApiCall({
         model: selectedModel,
         text,
       });
