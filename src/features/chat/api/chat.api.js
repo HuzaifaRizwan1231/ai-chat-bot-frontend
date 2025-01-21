@@ -17,6 +17,19 @@ export const getResponseFromChatApiCall = async (body) => {
   }
 };
 
+export const getResponseFromLangchainChatApiCall = async (body) => {
+  try {
+    const response = await axios.post(`${baseURL}/langchain-completion`, {
+      model: body.model,
+      text: encryptData(body.text),
+    });
+    response.data.data = decryptData(response.data.data);
+    return response.data;
+  } catch (e) {
+    return e;
+  }
+};
+
 export const trancribeAudioApiCall = async (formData) => {
   try {
     const response = await axios.post(`${baseURL}/transcribe`, formData);

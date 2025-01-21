@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   eventSourceApiCall,
   getResponseFromChatApiCall,
+  getResponseFromLangchainChatApiCall,
   trancribeAudioApiCall,
 } from "../api/chat.api";
 import { encryptData } from "../../../utils/cypto.utils";
@@ -94,7 +95,7 @@ export const useChatInterface = () => {
     } else {
       // Handle models without stream enabled
       let message;
-      const response = await getResponseFromChatApiCall({
+      const response = await getResponseFromLangchainChatApiCall({
         model: selectedModel,
         text,
       });
