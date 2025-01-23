@@ -10,6 +10,8 @@ export default {
         secondaryColorLight: "#f4f4f4",
         primaryColorDark: "#212121",
         secondaryColorDark: "#2f2f2f",
+        sidebarColorLight: "#f4f4f4",
+        sidebarColorDark: "#171717",
       },
     },
   },

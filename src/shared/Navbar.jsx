@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { SunIcon, MoonIcon } from "@heroicons/react/solid";
+import { SunIcon, MoonIcon, MenuIcon, PlusIcon } from "@heroicons/react/solid";
 
 const Navbar = ({
   darkMode,
@@ -8,14 +8,34 @@ const Navbar = ({
   selectedModel,
   setSelectedModel,
   modelOptions,
+  toggleCollapse,
+  isCollapsed,
+  handleCreateNewChat,
 }) => {
   return (
     <nav className="bg-primaryColorLight dark:bg-primaryColorDark shadow-md">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-4 lg:px-4">
         <div className="flex flex-col items-center sm:flex-row justify-between py-4">
           <div className="items-center text-center sm:text-left sm:justify-start justify-center w-full sm:w-1/3 mb-2 sm:mb-0">
-            <span className="text-2xl font-bold text-gray-800 dark:text-white">
-              AI Chatbot
+            <span className="text-2xl gap-4 flex items-center font-bold text-gray-800 dark:text-white">
+              {isCollapsed && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={toggleCollapse}
+                    className="p-2 rounded-lg bg-secondaryColorLight dark:bg-secondaryColorDark text-gray-800 dark:text-white"
+                  >
+                    <MenuIcon className="h-5 w-5" />
+                  </button>
+
+                  <button
+                    onClick={handleCreateNewChat}
+                    className="p-2 rounded-lg bg-secondaryColorLight dark:bg-secondaryColorDark text-gray-800 dark:text-white"
+                  >
+                    <PlusIcon className="h-5 w-5" />
+                  </button>
+                </div>
+              )}
+              <span className="text-nowrap">AI Chatbot</span>
             </span>
           </div>
           <div className="flex items-center w-full sm:w-2/3">

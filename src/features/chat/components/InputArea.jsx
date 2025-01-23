@@ -3,18 +3,22 @@ import { motion } from "framer-motion";
 import { ArrowUpIcon, MicrophoneIcon } from "@heroicons/react/solid";
 import { useInputArea } from "../hooks/useInputArea";
 
-const InputArea = ({ onSendMessage, loading, handleAudioRecording, recording, transcribing }) => {
-  const {
-    input,
-    rows,
-    handleSubmit,
-    handleKeyDown,
-    handleInputChange,
-  } = useInputArea(onSendMessage, loading);
+const InputArea = ({
+  onSendMessage,
+  loading,
+  handleAudioRecording,
+  recording,
+  transcribing,
+  isCollapsed,
+}) => {
+  const { input, rows, handleSubmit, handleKeyDown, handleInputChange } =
+    useInputArea(onSendMessage, loading);
 
   return (
     <motion.div
-      className="dark:bg-secondaryColorDark bg-secondaryColorLight p-4 my-4 shadow-md w-11/12 sm:w-3/4 lg:w-1/2 mx-auto rounded-3xl"
+      className={`dark:bg-secondaryColorDark bg-secondaryColorLight p-4 my-4 shadow-md mx-auto rounded-3xl ${
+        isCollapsed ? "w-11/12 sm:w-3/4 lg:w-1/2 " : "w-11/12 sm:w-3/4 lg:w-3/5"
+      }`}
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}

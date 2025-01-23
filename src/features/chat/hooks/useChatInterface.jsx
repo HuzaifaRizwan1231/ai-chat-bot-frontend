@@ -1,12 +1,22 @@
 import { useState, useEffect, useRef } from "react";
 import {
+  createNewChatApiCall,
   eventSourceApiCall,
+  getAllChatsApiCall,
   getResponseFromChatApiCall,
   getResponseFromLangchainChatApiCall,
   trancribeAudioApiCall,
 } from "../api/chat.api";
 import { encryptData } from "../../../utils/cypto.utils";
-import { STREAM_ENABLED_MODELS } from "../../../config/constants.config";
+import {
+  STREAM_ENABLED_MODELS,
+  USE_LANGCHAIN,
+  USE_STREAMING,
+} from "../../../config/constants.config";
+import {
+  getMessagesOfChatApiCall,
+  insertMessageApiCall,
+} from "../api/message.api";
 
 export const useChatInterface = () => {
   // States
@@ -30,6 +40,8 @@ export const useChatInterface = () => {
   const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
+  const [chats, setChats] = useState([]);
+  const [selectedChat, setSelectedChat] = useState(null);
 
   // Refs
   const messageListRef = useRef(null);
@@ -53,6 +65,9 @@ export const useChatInterface = () => {
     });
 
     eventSource.onmessage = (event) => {
+      // Set false after a chunk is recieved for stream enabled models
+      setLoading(false);
+
       const data = JSON.parse(event.data);
 
       setMessages((prevMessages) => {
@@ -88,17 +103,24 @@ export const useChatInterface = () => {
       sender: "user",
     };
     setMessages([...messages, newMessage]);
+    insertMessage(newMessage);
 
-    if (STREAM_ENABLED_MODELS.includes(selectedModel)) {
+    if (USE_STREAMING && STREAM_ENABLED_MODELS.includes(selectedModel)) {
       // Handle models with stream enabled
-      handleChatStream(text);
+      await handleChatStream(text);
     } else {
       // Handle models without stream enabled
-      let message;
-      const response = await getResponseFromChatApiCall({
-        model: selectedModel,
-        text,
-      });
+      let message, response;
+      USE_LANGCHAIN
+        ? (response = await getResponseFromLangchainChatApiCall({
+            model: selectedModel,
+            text,
+            chatId: selectedChat,
+          }))
+        : (response = await getResponseFromChatApiCall({
+            model: selectedModel,
+            text,
+          }));
 
       if (response.success) {
         message = response.data;
@@ -107,17 +129,17 @@ export const useChatInterface = () => {
           "I'm sorry, I couldn't process your request. Please try again.";
         console.error(response);
       }
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: messages.length + 2,
-          text: message,
-          sender: selectedModel,
-        },
-      ]);
-    }
+      const newMessage = {
+        id: messages.length + 2,
+        text: message,
+        sender: selectedModel,
+      };
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      insertMessage(newMessage);
 
-    setLoading(false);
+      // Set false after response is recieved for normal chat
+      setLoading(false);
+    }
   };
 
   const handleAudioRecording = () => {
@@ -160,6 +182,51 @@ export const useChatInterface = () => {
     });
   };
 
+  const handleCreateNewChat = async () => {
+    const response = await createNewChatApiCall();
+    if (response.success) {
+      setChats((prevChats) => [...prevChats, response.data]);
+    } else {
+      console.error(response);
+    }
+  };
+
+  const handleSelectChat = async (chatId) => {
+    setSelectedChat(chatId);
+
+    // Fetch messages of the chat
+    const response = await getMessagesOfChatApiCall(chatId);
+    if (response.success) {
+      setMessages(response.data);
+    } else {
+      console.error(response);
+    }
+  };
+
+  const getAllChats = async () => {
+    const response = await getAllChatsApiCall();
+    if (response.success) {
+      setChats(response.data);
+    } else {
+      console.error(response);
+    }
+  };
+
+  const insertMessage = async (message) => {
+    const response = await insertMessageApiCall({
+      text: message.text,
+      sender: message.sender,
+      chatId: selectedChat,
+    });
+    if (!response.success) {
+      console.error(response);
+    }
+  };
+
+  useEffect(() => {
+    getAllChats();
+  }, []);
+
   // Effects
   useEffect(() => {
     scrollToBottom();
@@ -186,5 +253,9 @@ export const useChatInterface = () => {
     handleAudioRecording,
     recording,
     transcribing,
+    chats,
+    handleCreateNewChat,
+    handleSelectChat,
+    selectedChat,
   };
 };

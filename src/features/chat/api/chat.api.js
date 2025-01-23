@@ -10,7 +10,8 @@ export const getResponseFromChatApiCall = async (body) => {
       model: body.model,
       text: encryptData(body.text),
     });
-    response.data.data = decryptData(response.data.data);
+    response.data.data &&
+      (response.data.data = decryptData(response.data.data));
     return response.data;
   } catch (e) {
     return e;
@@ -22,8 +23,10 @@ export const getResponseFromLangchainChatApiCall = async (body) => {
     const response = await axios.post(`${baseURL}/langchain-completion`, {
       model: body.model,
       text: encryptData(body.text),
+      chatId: body.chatId,
     });
-    response.data.data = decryptData(response.data.data);
+    response.data.data &&
+      (response.data.data = decryptData(response.data.data));
     return response.data;
   } catch (e) {
     return e;
@@ -33,7 +36,8 @@ export const getResponseFromLangchainChatApiCall = async (body) => {
 export const trancribeAudioApiCall = async (formData) => {
   try {
     const response = await axios.post(`${baseURL}/transcribe`, formData);
-    response.data.data = decryptData(response.data.data);
+    response.data.data &&
+      (response.data.data = decryptData(response.data.data));
     return response.data;
   } catch (e) {
     return e;
@@ -49,5 +53,23 @@ export const eventSourceApiCall = async (body) => {
     );
   } catch (e) {
     console.error(e);
+  }
+};
+
+export const createNewChatApiCall = async () => {
+  try {
+    const response = await axios.post(`${baseURL}/create`);
+    return response.data;
+  } catch (e) {
+    return e;
+  }
+};
+
+export const getAllChatsApiCall = async () => {
+  try {
+    const response = await axios.get(`${baseURL}/get`);
+    return response.data;
+  } catch (e) {
+    return e;
   }
 };
