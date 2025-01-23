@@ -65,6 +65,24 @@ export const createNewChatApiCall = async () => {
   }
 };
 
+export const deleteChatApiCall = async (chatId) => {
+  try {
+    const response = await axios.delete(`${baseURL}/delete?chatId=${chatId}`);
+    return response.data;
+  } catch (e) {
+    return e;
+  }
+};
+
+export const updateChatApiCall = async (body) => {
+  try {
+    const response = await axios.post(`${baseURL}/update`, body);
+    return response.data;
+  } catch (e) {
+    return e;
+  }
+};
+
 export const getAllChatsApiCall = async () => {
   try {
     const response = await axios.get(`${baseURL}/get`);

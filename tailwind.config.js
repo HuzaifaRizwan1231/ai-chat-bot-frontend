@@ -13,6 +13,10 @@ export default {
         sidebarColorLight: "#f4f4f4",
         sidebarColorDark: "#171717",
       },
+
+      screens: {
+        xs: "600px",
+      },
     },
   },
   plugins: [],

@@ -1,16 +1,14 @@
-import './App.css'
-import ChatInterface from './features/chat/pages/ChatInterface'
+import "./App.css";
+import ChatInterface from "./features/chat/pages/ChatInterface";
 
 function App() {
- 
-
   return (
     <>
-       <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <ChatInterface />
-    </div>
+      <div className="min-h-screen bg-primaryColorLight dark:bg-primaryColorDark">
+        <ChatInterface />
+      </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { MenuIcon, PlusIcon } from "@heroicons/react/solid";
 import { format, differenceInDays } from "date-fns";
+import SidebarItem from "./SidebarItem";
 
 const Sidebar = ({
   chats,
@@ -10,6 +11,7 @@ const Sidebar = ({
   selectedChat,
   isCollapsed,
   toggleCollapse,
+  handleDeleteChat,
 }) => {
   // Sort chats in descending order by date
   const sortedChats = [...chats].sort(
@@ -25,8 +27,8 @@ const Sidebar = ({
 
   return (
     <motion.div
-      className={`overflow-y-auto transition-width bg-sidebarColorLight dark:bg-sidebarColorDark shadow-md fixed top-0 left-0 z-10 h-full sm:static ${
-        isCollapsed ? "w-0" : "w-full sm:w-80 "
+      className={`overflow-y-auto transition-width bg-sidebarColorLight dark:bg-sidebarColorDark shadow-md fixed top-0 left-0 z-10 h-full xs:static ${
+        isCollapsed ? "w-0" : "w-full xs:w-5/12 sm:w-2/12 md:w-3/12 lg:w-2/12"
       }`}
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
@@ -57,22 +59,15 @@ const Sidebar = ({
                 getLabel(chat.created_at) !==
                   getLabel(sortedChats[index - 1].created_at);
               return (
-                <React.Fragment key={chat.id}>
-                  {showLabel && (
-                    <div className="text-black text-nowrap dark:text-white font-semibold px-2">
-                      {getLabel(chat.created_at)}
-                    </div>
-                  )}
-                  <div
-                    onClick={() => handleSelectChat(chat.id)}
-                    className={`p-2 text-nowrap dark:text-white text-black ${
-                      chat.id === selectedChat &&
-                      "bg-primaryColorLight dark:bg-primaryColorDark"
-                    } rounded-lg cursor-pointer hover:bg-primaryColorLight dark:hover:bg-primaryColorDark`}
-                  >
-                    {chat.id + " - " + chat.created_at}
-                  </div>
-                </React.Fragment>
+                <SidebarItem
+                  key={index}
+                  handleDeleteChat={handleDeleteChat}
+                  chat={chat}
+                  getLabel={getLabel}
+                  handleSelectChat={handleSelectChat}
+                  showLabel={showLabel}
+                  selectedChat={selectedChat}
+                />
               );
             })}
           </div>

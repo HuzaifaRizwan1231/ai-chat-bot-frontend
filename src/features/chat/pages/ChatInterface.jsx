@@ -7,7 +7,7 @@ import { useChatInterface } from "../hooks/useChatInterface";
 import InputArea from "../components/InputArea";
 
 const ChatInterface = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -30,12 +30,14 @@ const ChatInterface = () => {
     handleCreateNewChat,
     handleSelectChat,
     selectedChat,
+    handleDeleteChat,
   } = useChatInterface();
 
   return (
     <>
       <div className="flex h-screen">
         <Sidebar
+          handleDeleteChat={handleDeleteChat}
           isCollapsed={isCollapsed}
           selectedChat={selectedChat}
           toggleCollapse={toggleCollapse}
@@ -44,7 +46,13 @@ const ChatInterface = () => {
           handleSelectChat={handleSelectChat}
         />
         <div
-          className={`flex flex-col h-screen w-full ${darkMode ? "dark" : ""}`}
+          className={`flex flex-col h-screen transition-width duration-500 ${
+            darkMode ? "dark" : ""
+          } ${
+            isCollapsed
+              ? "w-full"
+              : "w-0 xs:w-7/12 sm:w-10/12 md:w-9/12 lg:w-10/12"
+          }`}
         >
           <Navbar
             isCollapsed={isCollapsed}
@@ -64,6 +72,8 @@ const ChatInterface = () => {
               className="flex flex-col flex-1 overflow-hidden"
             >
               <MessageList
+                handleCreateNewChat={handleCreateNewChat}
+                selectedChat={selectedChat}
                 isCollapsed={isCollapsed}
                 loading={loading}
                 transcribing={transcribing}
@@ -71,14 +81,16 @@ const ChatInterface = () => {
                 ref={messageListRef}
                 selectedModel={selectedModel}
               />
-              <InputArea
-                isCollapsed={isCollapsed}
-                handleAudioRecording={handleAudioRecording}
-                recording={recording}
-                loading={loading}
-                onSendMessage={handleSendMessage}
-                transcribing={transcribing}
-              />
+              {selectedChat && (
+                <InputArea
+                  isCollapsed={isCollapsed}
+                  handleAudioRecording={handleAudioRecording}
+                  recording={recording}
+                  loading={loading}
+                  onSendMessage={handleSendMessage}
+                  transcribing={transcribing}
+                />
+              )}
             </motion.div>
           </div>
         </div>

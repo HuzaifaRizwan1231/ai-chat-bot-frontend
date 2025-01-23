@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import {
   createNewChatApiCall,
+  deleteChatApiCall,
   eventSourceApiCall,
   getAllChatsApiCall,
   getResponseFromChatApiCall,
   getResponseFromLangchainChatApiCall,
   trancribeAudioApiCall,
+  updateChatApiCall,
 } from "../api/chat.api";
 import { encryptData } from "../../../utils/cypto.utils";
 import {
@@ -115,7 +117,7 @@ export const useChatInterface = () => {
         ? (response = await getResponseFromLangchainChatApiCall({
             model: selectedModel,
             text,
-            chatId: selectedChat,
+            chatId: selectedChat.id,
           }))
         : (response = await getResponseFromChatApiCall({
             model: selectedModel,
@@ -186,18 +188,70 @@ export const useChatInterface = () => {
     const response = await createNewChatApiCall();
     if (response.success) {
       setChats((prevChats) => [...prevChats, response.data]);
+      setSelectedChat(response.data);
+      setMessages([]);
     } else {
       console.error(response);
     }
   };
 
-  const handleSelectChat = async (chatId) => {
-    setSelectedChat(chatId);
+  const handleSelectChat = async (chat) => {
+    // Do nothing if same chat is selected again
+    if (selectedChat && chat.id === selectedChat.id) return;
+    setSelectedChat(chat);
 
     // Fetch messages of the chat
-    const response = await getMessagesOfChatApiCall(chatId);
+    const response = await getMessagesOfChatApiCall(chat.id);
     if (response.success) {
       setMessages(response.data);
+    } else {
+      console.error(response);
+    }
+  };
+
+  const setChatTitle = async (chat) => {
+    const firstMessage = messages[0];
+    const prompt = `Based on the following message you have to suggest a title to name the chat / conversation. Provide only one concise title without any quotation marks nothing more nothing less, only plain text:
+
+"${firstMessage.text}"`;
+
+    // Getting a title from the model
+    const response = await getResponseFromChatApiCall({
+      model: "gpt-4o",
+      text: prompt,
+    });
+
+    if (response.success) {
+      const title = response.data;
+      const updatedChat = { ...chat, title };
+      setChats((prevChats) =>
+        prevChats.map((chat) =>
+          chat.id === updatedChat.id ? updatedChat : chat
+        )
+      );
+
+      // updating the title in the database
+      const res = await updateChatApiCall({
+        chatId: chat.id,
+        title: title,
+      });
+
+      if (!res.success) {
+        console.error(res);
+      }
+    } else {
+      console.error(response);
+    }
+  };
+
+  const handleDeleteChat = async (chatId) => {
+    const response = await deleteChatApiCall(chatId);
+    if (response.success) {
+      setChats((prevChats) => prevChats.filter((chat) => chat.id !== chatId));
+      if (selectedChat?.id === chatId) {
+        setSelectedChat(null);
+        setMessages([]);
+      }
     } else {
       console.error(response);
     }
@@ -216,7 +270,7 @@ export const useChatInterface = () => {
     const response = await insertMessageApiCall({
       text: message.text,
       sender: message.sender,
-      chatId: selectedChat,
+      chatId: selectedChat.id,
     });
     if (!response.success) {
       console.error(response);
@@ -230,6 +284,9 @@ export const useChatInterface = () => {
   // Effects
   useEffect(() => {
     scrollToBottom();
+    // If there is a first message for the chat and still title is not set, set the title
+    if (selectedChat && messages.length === 1 && !selectedChat.title)
+      setChatTitle(selectedChat);
   }, [messages]);
 
   useEffect(() => {
@@ -257,5 +314,6 @@ export const useChatInterface = () => {
     handleCreateNewChat,
     handleSelectChat,
     selectedChat,
+    handleDeleteChat,
   };
 };
