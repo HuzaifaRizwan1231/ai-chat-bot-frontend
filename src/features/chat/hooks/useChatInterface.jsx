@@ -297,7 +297,7 @@ export const useChatInterface = () => {
   useEffect(() => {
     getAllChats();
     const selectedChat = JSON.parse(localStorage.getItem("selectedChat"));
-    handleSelectChat(selectedChat);
+    if (selectedChat) handleSelectChat(selectedChat);
   }, []);
 
   // Effects
