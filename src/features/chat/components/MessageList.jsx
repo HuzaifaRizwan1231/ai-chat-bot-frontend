@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import { motion } from "framer-motion";
 import MessageItem from "./MessageItem";
 import MessageItemSkeleton from "./skeletons/MessageItemSkeleton";
-import { PlusIcon } from "@heroicons/react/solid";
+import { PlusIcon, RefreshIcon } from "@heroicons/react/outline";
 
 const MessageList = forwardRef(
   (
@@ -14,9 +14,25 @@ const MessageList = forwardRef(
       isCollapsed,
       selectedChat,
       handleCreateNewChat,
+      chatLoading,
     },
     ref
   ) => {
+    if (chatLoading) {
+      return (
+        <>
+          <div
+            className={`flex justify-center items-center flex-1 overflow-y-auto pt-4 pb-8 space-y-4 ${
+              isCollapsed
+                ? "px-4 sm:px-8 md:px-[7rem] lg:px-[16rem] xl:px-[21rem]"
+                : "px-4 sm:px-8 md:px-[4rem] lg:px-[8.5rem] xl:px-[12rem]"
+            }`}
+          >
+            <div className="spinner"></div>
+          </div>
+        </>
+      );
+    }
     return (
       <motion.div
         ref={ref}
@@ -62,11 +78,7 @@ const MessageList = forwardRef(
           </div>
         ) : (
           messages.map((message) => (
-            <MessageItem
-              selectedModel={selectedModel}
-              key={message.id}
-              message={message}
-            />
+            <MessageItem loading={loading} key={message.id} message={message} />
           ))
         )}
 

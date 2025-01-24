@@ -22,3 +22,17 @@
     width: 100%;
   }
 }
+
+.spinner {
+  @apply border-4 border-solid dark:border-secondaryColorDark border-secondaryColorLight dark:border-l-white border-l-black;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

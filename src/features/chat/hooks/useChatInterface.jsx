@@ -42,6 +42,7 @@ export const useChatInterface = () => {
   const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
+  const [chatLoading, setChatLoading] = useState(false);
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
 
@@ -58,6 +59,10 @@ export const useChatInterface = () => {
         behavior: "smooth",
       });
     }
+  };
+
+  const setSelectedChatInLocalStorage = (chat) => {
+    localStorage.setItem("selectedChat", JSON.stringify(chat));
   };
 
   const handleChatStream = async (text) => {
@@ -189,6 +194,7 @@ export const useChatInterface = () => {
     if (response.success) {
       setChats((prevChats) => [...prevChats, response.data]);
       setSelectedChat(response.data);
+      setSelectedChatInLocalStorage(response.data);
       setMessages([]);
     } else {
       console.error(response);
@@ -198,7 +204,9 @@ export const useChatInterface = () => {
   const handleSelectChat = async (chat) => {
     // Do nothing if same chat is selected again
     if (selectedChat && chat.id === selectedChat.id) return;
+    setChatLoading(true);
     setSelectedChat(chat);
+    setSelectedChatInLocalStorage(chat);
 
     // Fetch messages of the chat
     const response = await getMessagesOfChatApiCall(chat.id);
@@ -207,6 +215,7 @@ export const useChatInterface = () => {
     } else {
       console.error(response);
     }
+    setChatLoading(false);
   };
 
   const setChatTitle = async (chat) => {
@@ -250,6 +259,7 @@ export const useChatInterface = () => {
       setChats((prevChats) => prevChats.filter((chat) => chat.id !== chatId));
       if (selectedChat?.id === chatId) {
         setSelectedChat(null);
+        setSelectedChatInLocalStorage(null);
         setMessages([]);
       }
     } else {
@@ -279,6 +289,8 @@ export const useChatInterface = () => {
 
   useEffect(() => {
     getAllChats();
+    const selectedChat = JSON.parse(localStorage.getItem("selectedChat"));
+    handleSelectChat(selectedChat);
   }, []);
 
   // Effects
@@ -315,5 +327,7 @@ export const useChatInterface = () => {
     handleSelectChat,
     selectedChat,
     handleDeleteChat,
+    chatLoading,
+    setChatLoading,
   };
 };

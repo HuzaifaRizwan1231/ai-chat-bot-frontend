@@ -7,7 +7,7 @@ import { useChatInterface } from "../hooks/useChatInterface";
 import InputArea from "../components/InputArea";
 
 const ChatInterface = () => {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -31,6 +31,7 @@ const ChatInterface = () => {
     handleSelectChat,
     selectedChat,
     handleDeleteChat,
+    chatLoading,
   } = useChatInterface();
 
   return (
@@ -72,6 +73,7 @@ const ChatInterface = () => {
               className="flex flex-col flex-1 overflow-hidden"
             >
               <MessageList
+                chatLoading={chatLoading}
                 handleCreateNewChat={handleCreateNewChat}
                 selectedChat={selectedChat}
                 isCollapsed={isCollapsed}
