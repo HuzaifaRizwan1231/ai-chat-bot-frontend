@@ -202,6 +202,8 @@ export const useChatInterface = () => {
   };
 
   const handleSelectChat = async (chat) => {
+    // Do nothing if chat has no messages, hence no title
+    if (!chat.title) return;
     // Do nothing if same chat is selected again
     if (selectedChat && chat.id === selectedChat.id) return;
     setChatLoading(true);
