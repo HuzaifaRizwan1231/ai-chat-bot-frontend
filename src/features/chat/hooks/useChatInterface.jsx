@@ -202,13 +202,18 @@ export const useChatInterface = () => {
   };
 
   const handleSelectChat = async (chat) => {
-    // Do nothing if chat has no messages, hence no title
-    if (!chat.title) return;
     // Do nothing if same chat is selected again
     if (selectedChat && chat.id === selectedChat.id) return;
     setChatLoading(true);
     setSelectedChat(chat);
     setSelectedChatInLocalStorage(chat);
+
+    // Do not fetch messages if chat has no title, hence no messages
+    if (!chat.title) {
+      setChatLoading(false);
+      setMessages([]);
+      return;
+    }
 
     // Fetch messages of the chat
     const response = await getMessagesOfChatApiCall(chat.id);
