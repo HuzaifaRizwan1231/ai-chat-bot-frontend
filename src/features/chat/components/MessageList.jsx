@@ -1,7 +1,6 @@
 import React, { forwardRef } from "react";
 import { motion } from "framer-motion";
 import MessageItem from "./MessageItem";
-import ChatBotIcon from "./icons/ChatBotIcon";
 import MessageItemSkeleton from "./skeletons/MessageItemSkeleton";
 
 const MessageList = forwardRef(({ loading, messages, selectedModel }, ref) => {
