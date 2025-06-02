@@ -1,11 +1,19 @@
-import React from "react";
-import {Prism as SyntaxHighlighter} from "react-syntax-highlighter";
+import React, { useEffect, useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import ReactMarkdown from "react-markdown";
-import { solarizedDarkAtom, solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  solarizedDarkAtom,
+  solarizedlight,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const MarkdownRenderer = ({ message, classStyles }) => {
-
+  const [content, setContent] = useState(message.text);
   const isDarkMode = localStorage.getItem("darkMode") === "true";
+
+  // Update content only once when message changes
+  useEffect(() => {
+    setContent(message.text);
+  }, [message.text]);
 
   return (
     <>
@@ -35,7 +43,7 @@ const MarkdownRenderer = ({ message, classStyles }) => {
           },
         }}
       >
-        {message.text}
+        {content}
       </ReactMarkdown>
     </>
   );

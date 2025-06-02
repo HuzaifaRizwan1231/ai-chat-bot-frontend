@@ -11,8 +11,8 @@ const MessageItem = ({ message }) => {
       {isUser ? (
         <>
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.3 }}
             className="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl rounded-3xl px-4 py-2 bg-secondaryColorLight dark:bg-secondaryColorDark text-black dark:text-white"
           >
