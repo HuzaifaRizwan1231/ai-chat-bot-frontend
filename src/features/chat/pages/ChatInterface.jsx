@@ -17,6 +17,9 @@ const ChatInterface = () => {
     selectedModel,
     setSelectedModel,
     modelOptions,
+    handleAudioRecording,
+    recording,
+    transcribing
   } = useChatInterface();
 
   return (
@@ -36,11 +39,12 @@ const ChatInterface = () => {
       >
         <MessageList
           loading={loading}
+          transcribing={transcribing}
           messages={messages}
           ref={messageListRef}
           selectedModel={selectedModel}
         />
-        <InputArea loading={loading} onSendMessage={handleSendMessage} />
+        <InputArea handleAudioRecording={handleAudioRecording} recording={recording} loading={loading} onSendMessage={handleSendMessage} transcribing={transcribing} />
       </motion.div>
     </div>
   );

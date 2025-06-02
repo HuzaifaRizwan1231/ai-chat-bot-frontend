@@ -6,8 +6,8 @@ const MessageItemSkeleton = ({ selectedModel }) => {
   return (
     <motion.div
       className={`flex justify-start pt-1`}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y:50 }}
+      animate={{ opacity: 1 ,y:0}}
       transition={{ duration: 0.3 }}
     >
       <div className="w-full flex items-start gap-4 rounded-3xl px-4 py-2 text-gray-800 dark:text-white">

@@ -1,5 +1,6 @@
-import axios from 'axios'
+import axios from "axios";
+import { API_URL } from "./constants.config";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL
+axios.defaults.baseURL = API_URL;
 
-export default axios
+export default axios;
