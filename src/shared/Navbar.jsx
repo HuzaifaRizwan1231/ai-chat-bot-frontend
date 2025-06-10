@@ -45,11 +45,13 @@ const Navbar = ({
                 onChange={(e) => setSelectedModel(e.target.value)}
                 className="p-2 rounded bg-secondaryColorLight dark:bg-secondaryColorDark text-gray-800 dark:text-white w-full sm:w-auto"
               >
-                {modelOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
+                {modelOptions
+                  .filter((option) => option.enable)
+                  .map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
               </select>
             </div>
             <div className="flex w-1/2 justify-end ">

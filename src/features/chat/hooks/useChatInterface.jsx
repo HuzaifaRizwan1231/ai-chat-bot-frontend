@@ -11,6 +11,12 @@ import {
 } from "../api/chat.api";
 import { encryptData } from "../../../utils/cypto.utils";
 import {
+  ENABLE_CLAUDE,
+  ENABLE_FINE_TUNED_GEMINI,
+  ENABLE_FINE_TUNED_GPT,
+  ENABLE_GEMINI,
+  ENABLE_GPT,
+  ENABLE_MERGESTACK_ASSISTANT,
   STREAM_ENABLED_MODELS,
   USE_LANGCHAIN,
   USE_STREAMING,
@@ -29,17 +35,36 @@ export const useChatInterface = () => {
   });
   const [loading, setLoading] = useState(false);
   const modelOptions = [
-    { value: "gpt-4o", label: "GPT-4o" },
+    { value: "gpt-4o", label: "GPT-4o", enable: ENABLE_GPT },
     {
       value: "ft:gpt-4o-mini-2024-07-18:mergestack::AqhhvrOU",
       label: "OpenAI Fine Tuned",
+      enable: ENABLE_FINE_TUNED_GPT,
     },
-    { value: "gemini-1.5-flash", label: "Gemini-1.5-Flash" },
-    { value: "tunedModels/increment-vgmge91wh5dn", label: "Gemini Fine Tuned" },
-    { value: "mergestack-chat-assistant", label: "Mergestack-Assisant" },
-    { value: "claude-3-5-sonnet-20241022", label: "Claude-Sonnet-3.5" },
+    {
+      value: "gemini-1.5-flash",
+      label: "Gemini-1.5-Flash",
+      enable: ENABLE_GEMINI,
+    },
+    {
+      value: "tunedModels/increment-vgmge91wh5dn",
+      label: "Gemini Fine Tuned",
+      enable: ENABLE_FINE_TUNED_GEMINI,
+    },
+    {
+      value: "mergestack-chat-assistant",
+      label: "Mergestack-Assisant",
+      enable: ENABLE_MERGESTACK_ASSISTANT,
+    },
+    {
+      value: "claude-3-5-sonnet-20241022",
+      label: "Claude-Sonnet-3.5",
+      enable: ENABLE_CLAUDE,
+    },
   ];
-  const [selectedModel, setSelectedModel] = useState(modelOptions[0].value);
+  const [selectedModel, setSelectedModel] = useState(
+    modelOptions.filter((option) => option.enable)[0].value
+  );
   const [recording, setRecording] = useState(false);
   const [transcribing, setTranscribing] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
@@ -233,7 +258,7 @@ export const useChatInterface = () => {
 
     // Getting a title from the model
     const response = await getResponseFromChatApiCall({
-      model: "gpt-4o",
+      model: "gemini-1.5-flash",
       text: prompt,
     });
 
